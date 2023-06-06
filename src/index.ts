@@ -81,7 +81,7 @@ function init3D() {
   // setting up renderer
   const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
 
-  console.log(renderer);
+  // console.log(renderer);
 
   renderer.setSize(parentElement1.clientWidth, parentElement1.clientHeight);
   viewport1.appendChild(renderer.domElement);
@@ -95,8 +95,8 @@ function init3D() {
   });
 
   // Add controls
-  const controls1 = new OrbitControls(camera, renderer.domElement);
-  controls1.enableDamping = true;
+  // const controls1 = new OrbitControls(camera, renderer.domElement);
+  // controls1.enableDamping = true;
 
   // Add axes to the scene
   // const axesHelper1 = new THREE.AxesHelper(6);
@@ -113,7 +113,7 @@ function init3D() {
     if (mixer !== null) {
       mixer.update(delta);
     }
-    controls1.update();
+    // controls1.update();
 
     renderer.render(scene1, camera);
   }
@@ -155,7 +155,7 @@ function init3D() {
     model1.translateY(-0.725);
     model1.translateX(1.525);
 
-    controls1.update();
+    // controls1.update();
 
     // initialize mixer after model1 is loaded
     mixer = new THREE.AnimationMixer(model1);
@@ -165,7 +165,7 @@ function init3D() {
     });
 
     scene1.add(model1);
-    console.log('Model 1: ', model1);
+    // console.log('Model 1: ', model1);
   });
 }
 
