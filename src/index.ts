@@ -11,6 +11,19 @@ const break1 = 992;
 const break2 = 768;
 const break3 = 480;
 
+function getcamerashift() {
+  if (window.innerWidth < break3) {
+    return 1.875;
+  }
+  if (window.innerWidth < break2) {
+    return 2.75;
+  }
+  if (window.innerWidth < break1) {
+    return 3;
+  }
+  return 2.25;
+}
+
 function getzoomshift() {
   if (window.innerWidth < break3) {
     return 0.625;
@@ -50,26 +63,25 @@ function init3D() {
 
   // setting up camera
   const aspectRatio1 = parentElement1.clientWidth / parentElement1.clientHeight;
-  const camera = new THREE.OrthographicCamera(-aspectRatio1, aspectRatio1, 1, -1, 0.1, 1000);
+  const camera = new THREE.PerspectiveCamera(75, aspectRatio1, 0.1, 1000);
 
-  camera.zoom = 0.4825; // Zoom out to make models appear smaller
   camera.updateProjectionMatrix(); // Must call after changing properties of the camera
 
-  camera.position.set(0.25, 0, 3);
+  camera.position.set(0, 0, getcamerashift());
 
   // Add lights
 
   const pointLight1 = new THREE.PointLight(0xd2e39e, 0.5);
   const pointLight2 = new THREE.PointLight(0x924abc, 1);
 
-  pointLight1.position.set(0, 0, 0.525);
+  pointLight1.position.set(-1, 0, 0.525);
   pointLight1.distance = 5;
   pointLight1.lookAt(0, 0, 0);
   scene1.add(pointLight1);
 
-  pointLight2.position.set(3, -1, -0.2);
-  pointLight2.distance = 5;
-  pointLight2.lookAt(0, 0, 0);
+  pointLight2.position.set(1, -1, 0.525);
+  pointLight2.distance = 4;
+  pointLight2.lookAt(20, 1, 0);
   scene1.add(pointLight2);
 
   // const sphereSize = 1;
@@ -90,13 +102,14 @@ function init3D() {
   window.addEventListener('resize', () => {
     renderer.setSize(parentElement1.clientWidth, parentElement1.clientHeight);
     camera.aspect = parentElement1.clientWidth / parentElement1.clientHeight;
+    camera.position.set(0, 0, getcamerashift());
     camera.updateProjectionMatrix();
     model1.scale.set(getzoomshift(), getzoomshift(), getzoomshift());
   });
 
   // Add controls
-  // const controls1 = new OrbitControls(camera, renderer.domElement);
-  // controls1.enableDamping = true;
+  const controls1 = new OrbitControls(camera, renderer.domElement);
+  controls1.enableDamping = true;
 
   // Add axes to the scene
   // const axesHelper1 = new THREE.AxesHelper(6);
@@ -113,7 +126,7 @@ function init3D() {
     if (mixer !== null) {
       mixer.update(delta);
     }
-    // controls1.update();
+    controls1.update();
 
     renderer.render(scene1, camera);
   }
@@ -130,7 +143,7 @@ function init3D() {
     // const { texture } = data;
 
     const newMaterial = new THREE.MeshStandardMaterial({
-      metalness: 0.2,
+      metalness: 0.1,
       roughness: 0.5,
       // map: texturefile,
     });
@@ -152,10 +165,10 @@ function init3D() {
 
     model1.scale.set(getzoomshift(), getzoomshift(), getzoomshift());
 
-    model1.translateY(-0.725);
-    model1.translateX(1.525);
+    model1.translateY(-0.925);
+    model1.translateX(0);
 
-    // controls1.update();
+    controls1.update();
 
     // initialize mixer after model1 is loaded
     mixer = new THREE.AnimationMixer(model1);
@@ -175,29 +188,29 @@ async function load() {
     'https://uploads-ssl.webflow.com/646283aaab5c997eb0483d18/647f3f4498f1f83d49f1a85a_XReg-VASPdata-MainViusalsV4.glb.txt'
   );
 
-  // const texture = await loadTexture(
-  //   'https://uploads-ssl.webflow.com/646283aaab5c997eb0483d18/647e3b2d20158b64a0528928_bumpmap.jpg'
-  // );
-  return { model1 };
+  const texture = await loadTexture(
+    'https://uploads-ssl.webflow.com/646283aaab5c997eb0483d18/647e3b2d20158b64a0528928_bumpmap.jpg'
+  );
+  return { model1, texture };
 }
-// const textureLoader = new THREE.TextureLoader();
+const textureLoader = new THREE.TextureLoader();
 const modelLoader = new GLTFLoader();
 
-// function loadTexture(url) {
-//   return new Promise((resolve) => {
-//     textureLoader.load(url, (data) => {
-//       data.needsUpdate = true;
-//       data.flipY = false;
+function loadTexture(url) {
+  return new Promise((resolve) => {
+    textureLoader.load(url, (data) => {
+      data.needsUpdate = true;
+      data.flipY = false;
 
-//       resolve(data);
-//     });
-//   });
-// }
+      resolve(data);
+    });
+  });
+}
 
 function loadModel(url, id) {
   return new Promise((resolve, reject) => {
     modelLoader.load(url, (gltf) => {
-      console.log(gltf);
+      // console.log(gltf);
       const { scene } = gltf;
       const { animations } = gltf;
       resolve({ scene, animations });
