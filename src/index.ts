@@ -148,7 +148,6 @@ function init3D() {
       // map: texturefile,
     });
 
-    // newMaterial.normalMap = normalTexture;
     newMaterial.bumpMap = bumpTexture;
     newMaterial.bumpScale = 0.725;
 
