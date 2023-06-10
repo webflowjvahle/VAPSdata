@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { TextureLoader } from 'three';
-import { RectAreaLightHelper } from 'three/addons/helpers/RectAreaLightHelper.js';
+// import { RectAreaLightHelper } from 'three/addons/helpers/RectAreaLightHelper.js';
 import { RectAreaLightUniformsLib } from 'three/addons/lights/RectAreaLightUniformsLib.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 let model1;
 
@@ -13,7 +13,7 @@ const break3 = 480;
 
 function getcamerashift() {
   if (window.innerWidth < break3) {
-    return 1.875;
+    return 2.825;
   }
   if (window.innerWidth < break2) {
     return 2.75;
@@ -26,15 +26,15 @@ function getcamerashift() {
 
 function getzoomshift() {
   if (window.innerWidth < break3) {
-    return 0.625;
+    return 0.675;
   }
   if (window.innerWidth < break2) {
     return 0.675;
   }
   if (window.innerWidth < break1) {
-    return 1;
+    return 0.825;
   }
-  return 0.75;
+  return 0.625;
 }
 
 let currentTime = 0;
@@ -71,16 +71,19 @@ function init3D() {
 
   // Add lights
 
-  const pointLight1 = new THREE.PointLight(0xd2e39e, 0.5);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.05);
+  scene1.add(ambientLight);
+
+  const pointLight1 = new THREE.PointLight(0xd2e39e, 1);
   const pointLight2 = new THREE.PointLight(0x924abc, 1);
 
-  pointLight1.position.set(-1, 0, 0.525);
-  pointLight1.distance = 5;
-  pointLight1.lookAt(0, 0, 0);
+  pointLight1.position.set(-0.925, 0.325, 0.525);
+  pointLight1.distance = 3;
+  pointLight1.lookAt(0.1, 2, 0.1);
   scene1.add(pointLight1);
 
   pointLight2.position.set(1, -1, 0.525);
-  pointLight2.distance = 4;
+  pointLight2.distance = 3;
   pointLight2.lookAt(20, 1, 0);
   scene1.add(pointLight2);
 
@@ -108,8 +111,8 @@ function init3D() {
   });
 
   // Add controls
-  const controls1 = new OrbitControls(camera, renderer.domElement);
-  controls1.enableDamping = true;
+  // const controls1 = new OrbitControls(camera, renderer.domElement);
+  // controls1.enableDamping = true;
 
   // Add axes to the scene
   // const axesHelper1 = new THREE.AxesHelper(6);
@@ -126,7 +129,7 @@ function init3D() {
     if (mixer !== null) {
       mixer.update(delta);
     }
-    controls1.update();
+    // controls1.update();
 
     renderer.render(scene1, camera);
   }
@@ -143,13 +146,13 @@ function init3D() {
     // const { texture } = data;
 
     const newMaterial = new THREE.MeshStandardMaterial({
-      metalness: 0.1,
-      roughness: 0.5,
+      metalness: 0.325,
+      roughness: 0.625,
       // map: texturefile,
     });
 
     newMaterial.bumpMap = bumpTexture;
-    newMaterial.bumpScale = 0.725;
+    newMaterial.bumpScale = 1;
 
     model1.traverse((node) => {
       if (node.isMesh) {
@@ -167,7 +170,7 @@ function init3D() {
     model1.translateY(-0.925);
     model1.translateX(0);
 
-    controls1.update();
+    // controls1.update();
 
     // initialize mixer after model1 is loaded
     mixer = new THREE.AnimationMixer(model1);
@@ -184,11 +187,11 @@ function init3D() {
 /* Loader Functions */
 async function load() {
   model1 = await loadModel(
-    'https://uploads-ssl.webflow.com/646283aaab5c997eb0483d18/647f3f4498f1f83d49f1a85a_XReg-VASPdata-MainViusalsV4.glb.txt'
+    'https://uploads-ssl.webflow.com/646283aaab5c997eb0483d18/6484aaaa3bdb661f629bfb85_XReg-VASPdata-MainViusalsV5.glb.txt'
   );
 
   const texture = await loadTexture(
-    'https://uploads-ssl.webflow.com/646283aaab5c997eb0483d18/647e3b2d20158b64a0528928_bumpmap.jpg'
+    'https://uploads-ssl.webflow.com/646283aaab5c997eb0483d18/6463925c61d09e9e0d0a1415_VASPnet-MainTextureV4.png'
   );
   return { model1, texture };
 }
